@@ -3,7 +3,9 @@ const express = require("express");
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
+const { config } = require("dotenv");
 const app = express();
+config();
 
 //? LOCAL IMPORTS ----------------------------------------------------------------------------
 const notFoundMiddleware = require("./middleware/notFoundMiddleware");
