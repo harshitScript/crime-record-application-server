@@ -1,10 +1,14 @@
 {
   "name": "crime-record-application-server",
   "version": "1.0.0",
-  "description": "A express server to provide buisness logic to the client application for recording crime.",
+  "description": "A express server to provide business logic to the client application for recording crime.",
   "main": "app.js",
   "scripts": {
-    "test": "npm test"
+    "test": "",
+    "start": "node app.js",
+    "start:dev": "env-cmd -f ./environment/.env nodemon app.js",
+    "start:uat": "env-cmd -f ./environment/.env.test nodemon app.js",
+    "start:prod": "env-cmd -f ./environment/.env.prod nodemon app.js"
   },
   "keywords": [
     "express",
@@ -15,6 +19,10 @@
   "author": "Harshit Bhawsar",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "compression": "^1.7.4",
+    "env-cmd": "^10.1.0",
+    "express": "^4.18.2",
+    "helmet": "^6.0.1",
+    "morgan": "^1.10.0"
   }
 }
