@@ -11,7 +11,9 @@ const configurationController = async (req, res, next) => {
       throw error;
     }
 
-    res.json(response);
+    res.json({
+      data: response,
+    });
 
     return 1;
   } catch (error) {

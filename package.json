@@ -4,12 +4,9 @@
   "description": "A express server to provide business logic to the client application for recording crime.",
   "main": "app.js",
   "scripts": {
-    "test": "mocha",
-    "test:dev": "env-cmd -f ./environment/.env mocha",
-    "test:uat": "env-cmd -f ./environment/.env.test mocha",
+    "test": "env-cmd -f ./environment/.env.test mocha --timeout 5000",
     "start": "node app.js",
     "dev": "env-cmd -f ./environment/.env nodemon app.js",
-    "uat": "env-cmd -f ./environment/.env.test nodemon app.js",
     "prod": "env-cmd -f ./environment/.env.prod nodemon app.js"
   },
   "keywords": [
