@@ -1,8 +1,14 @@
 const Configuration = require("../../models/configuration");
 const addConfigurationController = async (req, res, next) => {
-  const { tenant: paramTenant } = req.params;
-  const { tenant, primaryColor, secondaryColor, primaryShade, secondaryShade } =
-    req.body;
+  const { tenant: paramTenant = "" } = req.params;
+  const {
+    tenant = "",
+    primaryColor = "",
+    secondaryColor = "",
+    primaryShade = "",
+    secondaryShade = "",
+    views = [],
+  } = req.body;
 
   try {
     if (paramTenant !== tenant) {
@@ -14,7 +20,7 @@ const addConfigurationController = async (req, res, next) => {
     const configuration = new Configuration({
       tenant,
       theme: { primaryColor, secondaryColor, primaryShade, secondaryShade },
-      config: {},
+      config: { views },
     });
 
     await configuration.save();

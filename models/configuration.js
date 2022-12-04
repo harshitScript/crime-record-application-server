@@ -29,7 +29,12 @@ const configurationSchema = new Schema({
     required: true,
   },
   config: {
-    type: {},
+    type: {
+      views: {
+        type: [String],
+        required: true,
+      },
+    },
     required: true,
   },
 });
