@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Configuration = require("../models/configuration");
 const configurationController = require("../controllers/general/configurationController");
 const whoIAmController = require("../controllers/general/whoIAmController");
+const addConfigurationController = require("../controllers/general/addConfigurationController");
 
 describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
   describe("whoIAmController", () => {
@@ -86,6 +87,55 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
         json() {},
       };
       configurationController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("addConfigurationController", () => {
+    before((done) => {
+      mongoose.connect(process.env.MONGO_URI).then(() => done());
+    });
+    after((done) => {
+      Configuration.deleteMany({})
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+    });
+    it("should throw an error if tenant in param does not match to tenant in payload.", (done) => {
+      const req = {
+        params: {
+          tenant: "xyz",
+        },
+        body: {
+          tenant: "abc",
+        },
+      };
+      addConfigurationController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should add tenant configuration successfully if all goes well.", (done) => {
+      const req = {
+        params: {
+          tenant: "xyz",
+        },
+        body: {
+          tenant: "xyz",
+          primaryColor: "1111111",
+          secondaryColor: "1111111",
+          primaryShade: "1111111",
+          secondaryShade: "1111111",
+        },
+      };
+      const res = {
+        json() {},
+        status(arg) {
+          expect(arg).to.be.equals(201);
+          return this;
+        },
+      };
+      addConfigurationController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
         done();
       });
