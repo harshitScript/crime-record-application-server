@@ -13,8 +13,10 @@ const errorHandlingMiddleware = require("./middleware/errorHandlingMiddleware");
 const logsWriteStream = require("./logs/logs.config");
 const generalRoutes = require("./routes/generalRoutes");
 const { connectMongoDb } = require("./database/mongodb");
+const cors = require("./middleware/cors");
 
 //? MIDDLEWARE(s) ----------------------------------------------------------------------------
+app.use(cors);
 app.use(helmet());
 app.use(compression());
 app.use(
