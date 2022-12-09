@@ -31,7 +31,18 @@ const configurationSchema = new Schema({
   config: {
     type: {
       views: {
-        type: [String],
+        type: [
+          {
+            title: {
+              type: String,
+              required: true,
+            },
+            description: {
+              type: String,
+              required: true,
+            },
+          },
+        ],
         required: true,
       },
     },
