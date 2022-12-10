@@ -14,6 +14,7 @@ const logsWriteStream = require("./logs/logs.config");
 const generalRoutes = require("./routes/generalRoutes");
 const { connectMongoDb } = require("./database/mongodb");
 const cors = require("./middleware/cors");
+const userRoutes = require("./routes/userRoutes");
 
 //? MIDDLEWARE(s) ----------------------------------------------------------------------------
 app.use(cors);
@@ -25,6 +26,7 @@ app.use(
     : (req, res, next) => next()
 );
 app.use("/general", generalRoutes);
+app.use("/user", userRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlingMiddleware);
 
