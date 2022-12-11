@@ -6,6 +6,7 @@ const createUserController = require("../controllers/user/createUserController")
 const User = require("../models/user");
 const { config } = require("dotenv");
 const loginUserController = require("../controllers/user/loginUserController");
+const getUserInfoController = require("../controllers/user/getUserInfoController");
 config();
 
 describe("USER CONTROLLERS TESTING SUITE >>>", () => {
@@ -48,7 +49,6 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
     });
   });
   describe("loginUserController", () => {
-    let testUser = {};
     before((done) => {
       mongoose
         .connect(process.env.MONGO_URI)
@@ -66,8 +66,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
 
           return user.save();
         })
-        .then((user) => {
-          testUser = user;
+        .then(() => {
           done();
         });
     });
@@ -125,6 +124,69 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
       loginUserController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
         jwt.sign.restore();
+        done();
+      });
+    });
+  });
+  describe("getUserInfoController", () => {
+    let testUser = {};
+    before((done) => {
+      mongoose
+        .connect(process.env.MONGO_URI)
+        .then(() => {
+          const user = new User({
+            imageData: {
+              key: "test",
+              url: "test",
+            },
+            password: "TEST",
+            permissions: ["root"],
+            email: "test",
+            name: "test",
+          });
+
+          return user.save();
+        })
+        .then((user) => {
+          testUser = user;
+          done();
+        });
+    });
+
+    after((done) => {
+      User.deleteMany({})
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+    });
+
+    it("should throw an error if database refuses to connect.", (done) => {
+      sinon.stub(User, "findById");
+      User.findById.throws();
+      const req = {
+        params: {
+          userId: "a-dummy-user-id",
+        },
+      };
+      getUserInfoController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        User.findById.restore();
+        done();
+      });
+    });
+    it("should query a user document.", (done) => {
+      const req = {
+        params: {
+          userId: testUser?._id,
+        },
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.have.property("user");
+          return this;
+        },
+      };
+      getUserInfoController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
         done();
       });
     });
