@@ -1,7 +1,7 @@
 const User = require("../../models/user");
 
 const createUserController = async (req, res, next) => {
-  const { name, email, password, permissions } = req.body;
+  const { name, email, mobile, password, permissions } = req.body;
   const image = req.file;
 
   try {
@@ -10,6 +10,7 @@ const createUserController = async (req, res, next) => {
       permissions,
       name,
       email,
+      mobile,
       imageData: {
         url: image.location,
         key: image?.key,

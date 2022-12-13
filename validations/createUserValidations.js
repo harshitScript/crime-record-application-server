@@ -19,6 +19,10 @@ const createUserValidations = [
         }
       });
     }),
+  body("mobile")
+    .trim()
+    .isLength({ max: 11, min: 10 })
+    .withMessage("Mobile Number must be 10 to 11 digits long."),
   body("password")
     .trim()
     .isLength({ min: 8, max: 25 })
