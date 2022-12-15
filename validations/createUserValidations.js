@@ -29,7 +29,7 @@ const createUserValidations = [
     .withMessage("Password must be 8 to 25 characters long."),
   body("permissions")
     .custom((value) => {
-      if (value.length) {
+      if (Array.isArray(value)) {
         return true;
       } else {
         return false;
