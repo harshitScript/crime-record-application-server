@@ -1,13 +1,23 @@
 const User = require("../../models/user");
 
 const createUserController = async (req, res, next) => {
-  const { name, email, mobile, password, permissions } = req.body;
+  const {
+    name = "",
+    email = "",
+    mobile = "",
+    password = "",
+    permissions = "",
+  } = req.body;
   const image = req.file;
+  let structuredPermissions = [];
+  if (permissions) {
+    structuredPermissions = permissions.split(", ");
+  }
 
   try {
     const user = new User({
       password,
-      permissions,
+      permissions: structuredPermissions,
       name,
       email,
       mobile,
