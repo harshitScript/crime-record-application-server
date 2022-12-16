@@ -9,6 +9,8 @@ const createUserValidations = require("../validations/createUserValidations");
 const validationsResultMiddleware = require("../middleware/validationsResultMiddleware");
 const deleteS3UploadMiddleware = require("../middleware/deleteS3UploadMiddleware");
 const getUserInfoController = require("../controllers/user/getUserInfoController");
+const authenticationCheckerMIddleware = require("../middleware/authenticationCheckerMIddleware");
+const listUsersController = require("../controllers/user/listUsersController");
 
 //* POST /user/login
 userRoutes.post("/login", json(), loginUserController);
@@ -26,5 +28,12 @@ userRoutes.post(
 
 //* GET /user/:user-id
 userRoutes.get("/:userId", getUserInfoController);
+
+//* GET /user/list/:page
+userRoutes.get(
+  "/list/:page",
+  authenticationCheckerMIddleware,
+  listUsersController
+);
 
 module.exports = userRoutes;

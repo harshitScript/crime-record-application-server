@@ -7,6 +7,7 @@ const User = require("../models/user");
 const { config } = require("dotenv");
 const loginUserController = require("../controllers/user/loginUserController");
 const getUserInfoController = require("../controllers/user/getUserInfoController");
+const listUsersController = require("../controllers/user/listUsersController");
 config();
 
 describe("USER CONTROLLERS TESTING SUITE >>>", () => {
@@ -25,7 +26,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
           name: "test",
           email: "test@test.com",
           password: "test@123",
-          permissions: ["test"],
+          permissions: null,
         },
         file: {
           location: "test",
@@ -59,7 +60,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
               url: "test",
             },
             password: "TEST",
-            permissions: ["root"],
+            permissions: "root, read",
             email: "test",
             name: "test",
           });
@@ -140,7 +141,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
               url: "test",
             },
             password: "TEST",
-            permissions: ["root"],
+            permissions: "root",
             email: "test",
             name: "test",
           });
@@ -186,6 +187,52 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       getUserInfoController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("listUsersController", () => {
+    before((done) => {
+      mongoose
+        .connect(process.env.MONGO_URI)
+        .then(() => {
+          const testUser = new User({
+            imageData: {
+              key: "test",
+              url: "test",
+            },
+            password: "TEST",
+            permissions: "root",
+            email: "test",
+            name: "test",
+          });
+
+          return testUser.save();
+        })
+        .then(() => done());
+    });
+    after((done) => {
+      User.deleteMany({})
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+    });
+    it("Should throw an error if database refuses connection.", (done) => {
+      sinon.stub(User, "find");
+      User.find.throws();
+      listUsersController({}, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        User.find.restore();
+        done();
+      });
+    });
+    it("should return the list of users if all goes well.", (done) => {
+      const res = {
+        json(obj) {
+          expect(obj).to.have.property("users");
+        },
+      };
+      listUsersController({}, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
         done();
       });

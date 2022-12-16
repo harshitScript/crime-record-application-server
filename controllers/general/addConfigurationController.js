@@ -7,6 +7,7 @@ const addConfigurationController = async (req, res, next) => {
     secondaryColor = "",
     primaryShade = "",
     secondaryShade = "",
+    ternaryColor = "",
     views = [],
   } = req.body;
 
@@ -19,7 +20,13 @@ const addConfigurationController = async (req, res, next) => {
 
     const configuration = new Configuration({
       tenant,
-      theme: { primaryColor, secondaryColor, primaryShade, secondaryShade },
+      theme: {
+        primaryColor,
+        secondaryColor,
+        primaryShade,
+        secondaryShade,
+        ternaryColor,
+      },
       config: { views },
     });
 

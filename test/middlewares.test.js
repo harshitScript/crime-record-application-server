@@ -1,4 +1,7 @@
 const { expect } = require("chai");
+const sinon = require("sinon");
+const jwt = require("jsonwebtoken");
+const authenticationCheckerMIddleware = require("../middleware/authenticationCheckerMIddleware");
 const errorHandlingMiddleware = require("../middleware/errorHandlingMiddleware");
 const notFoundMiddleware = require("../middleware/notFoundMiddleware");
 
@@ -47,6 +50,37 @@ describe("MIDDLEWARE TESTING SUITE >>>", () => {
         },
       };
       errorHandlingMiddleware(error, {}, res, () => {});
+    });
+  });
+  describe("authenticationCheckerMIddleware", () => {
+    it("Should throw an error if authorization header not found.", () => {
+      const req = {
+        headers: {},
+      };
+      expect(authenticationCheckerMIddleware(req, {}, () => {})).to.be.equals(
+        0
+      );
+    });
+    it("Should throw an error if authorization token expired.", () => {
+      const req = {
+        headers: { authorization: "Bearer some-dummy-auth-token" },
+      };
+      sinon.stub(jwt, "verify");
+      jwt.verify.returns(null);
+      expect(authenticationCheckerMIddleware(req, {}, () => {})).to.be.equals(
+        0
+      );
+      jwt.verify.restore();
+    });
+    it("Should append the userId to the req object if authorization token is verified.", () => {
+      const req = {
+        headers: { authorization: "Bearer some-dummy-auth-token" },
+      };
+      sinon.stub(jwt, "verify");
+      jwt.verify.returns({ userId: "a_dummy_user_id" });
+      authenticationCheckerMIddleware(req, {}, () => {});
+      expect(req).to.have.property("userId", "a_dummy_user_id");
+      jwt.verify.restore();
     });
   });
 });

@@ -35,6 +35,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
               secondaryColor: "1111111",
               primaryShade: "1111111",
               secondaryShade: "1111111",
+              ternaryColor: "1111111",
             },
           });
           return configuration.save();
@@ -126,6 +127,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
           secondaryColor: "1111111",
           primaryShade: "1111111",
           secondaryShade: "1111111",
+          ternaryColor: "1111111",
         },
       };
       const res = {
