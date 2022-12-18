@@ -27,7 +27,7 @@ const createUserController = async (req, res, next) => {
         url: image.location,
         key: image?.key,
       },
-      creator: creator ? creator : null,
+      creator: creator,
     });
 
     const response = await user.save();
