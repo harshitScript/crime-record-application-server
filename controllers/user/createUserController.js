@@ -7,6 +7,7 @@ const createUserController = async (req, res, next) => {
     mobile = "",
     password = "",
     permissions = "",
+    creator = "",
   } = req.body;
   const image = req.file;
   let structuredPermissions = [];
@@ -21,10 +22,12 @@ const createUserController = async (req, res, next) => {
       name,
       email,
       mobile,
+      criminalsList: [],
       imageData: {
         url: image.location,
         key: image?.key,
       },
+      creator: creator ? creator : null,
     });
 
     const response = await user.save();

@@ -37,6 +37,15 @@ const userSchema = new Schema(
       type: Array,
       required: true,
     },
+    criminalsList: {
+      type: [{ type: Schema.Types.ObjectId, ref: "criminals" }],
+      required: true,
+    },
+    creator: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "criminals",
+    },
   },
   { timestamps: true }
 );
