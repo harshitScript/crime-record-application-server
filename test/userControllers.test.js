@@ -8,6 +8,7 @@ const { config } = require("dotenv");
 const loginUserController = require("../controllers/user/loginUserController");
 const getUserInfoController = require("../controllers/user/getUserInfoController");
 const listUsersController = require("../controllers/user/listUsersController");
+const deleteUserController = require("../controllers/user/deleteUserController");
 config();
 
 describe("USER CONTROLLERS TESTING SUITE >>>", () => {
@@ -27,6 +28,9 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
           email: "test@test.com",
           password: "test@123",
           permissions: null,
+          criminalsList: [],
+          mobile: "6666666666",
+          creator: "639c971579cd39c18dab3527",
         },
         file: {
           location: "test",
@@ -63,6 +67,9 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root, read",
             email: "test",
             name: "test",
+            criminalsList: [],
+            mobile: "6666666666",
+            creator: "639c971579cd39c18dab3527",
           });
 
           return user.save();
@@ -144,6 +151,9 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root",
             email: "test",
             name: "test",
+            criminalsList: [],
+            mobile: "6666666666",
+            creator: "639c971579cd39c18dab3527",
           });
 
           return user.save();
@@ -206,6 +216,9 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root",
             email: "test",
             name: "test",
+            criminalsList: [],
+            mobile: "6666666666",
+            creator: "639c971579cd39c18dab3527",
           });
 
           return testUser.save();
@@ -233,6 +246,89 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       listUsersController({}, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("deleteUserController", () => {
+    let testUser = {};
+    before((done) => {
+      mongoose
+        .connect(process.env.MONGO_URI)
+        .then(() => {
+          const user = new User({
+            imageData: {
+              key: "test",
+              url: "test",
+            },
+            password: "TEST",
+            permissions: "root",
+            email: "test",
+            name: "test",
+            criminalsList: [],
+            mobile: "6666666666",
+            creator: "639c971579cd39c18dab3527",
+          });
+
+          return user.save();
+        })
+        .then((user) => {
+          testUser = user;
+          done();
+        });
+    });
+    after((done) => {
+      mongoose.disconnect().then(() => done());
+    });
+    it("should throw an error if userId not found.", (done) => {
+      const req = {
+        params: {
+          userId: "",
+        },
+      };
+      deleteUserController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should throw an error if database refuses connection.", (done) => {
+      const req = {
+        params: {
+          userId: "xyz",
+        },
+      };
+      sinon.stub(User, "findById");
+      User.findById.throws();
+      deleteUserController(req, {}, () => {}).then((res) => {
+        User.findById.restore();
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should thrown an error if user not found.", (done) => {
+      const req = {
+        params: {
+          userId: "xyz",
+        },
+      };
+      deleteUserController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should delete a user if all goes fine", (done) => {
+      const req = {
+        params: {
+          userId: testUser?._id,
+        },
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.haveOwnProperty("message");
+        },
+      };
+      deleteUserController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
         done();
       });

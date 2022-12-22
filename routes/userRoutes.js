@@ -11,6 +11,7 @@ const deleteS3UploadMiddleware = require("../middleware/deleteS3UploadMiddleware
 const getUserInfoController = require("../controllers/user/getUserInfoController");
 const authenticationCheckerMIddleware = require("../middleware/authenticationCheckerMIddleware");
 const listUsersController = require("../controllers/user/listUsersController");
+const deleteUserController = require("../controllers/user/deleteUserController");
 
 //* POST /user/login
 userRoutes.post("/login", json(), loginUserController);
@@ -34,6 +35,13 @@ userRoutes.get(
   "/list/:page",
   authenticationCheckerMIddleware,
   listUsersController
+);
+
+//* DELETE /user/:userId/delete
+userRoutes.delete(
+  "/:userId/delete",
+  authenticationCheckerMIddleware,
+  deleteUserController
 );
 
 module.exports = userRoutes;
