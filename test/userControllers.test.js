@@ -317,8 +317,21 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         done();
       });
     });
+    it("should throw an error if other than creator try to delete the user", (done) => {
+      const req = {
+        userId: "xyz",
+        params: {
+          userId: testUser?._id,
+        },
+      };
+      deleteUserController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
     it("should delete a user if all goes fine", (done) => {
       const req = {
+        userId: "639c971579cd39c18dab3527",
         params: {
           userId: testUser?._id,
         },
