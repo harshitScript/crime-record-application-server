@@ -37,8 +37,8 @@ const userSchema = new Schema(
       type: Array,
       required: true,
     },
-    criminalsList: {
-      type: [{ type: Schema.Types.ObjectId, ref: "criminals" }],
+    records: {
+      type: [{ type: Schema.Types.ObjectId, ref: "record" }],
       required: true,
     },
     creator: {
@@ -49,5 +49,22 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+userSchema.methods.addRecord = function (recordId = "") {
+  let tempRecords = this.records;
 
+  tempRecords = [...tempRecords, recordId];
+
+  this.records = tempRecords;
+
+  return this.save();
+};
+userSchema.methods.removeRecord = function (recordId = "") {
+  let tempRecords = this.criminalsList;
+
+  tempRecords = tempCriminalsList.filter((id) => id.toString() !== recordId);
+
+  this.records = tempRecords;
+
+  return this.save();
+};
 module.exports = mongoose.model("user", userSchema);

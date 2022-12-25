@@ -28,7 +28,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
           email: "test@test.com",
           password: "test@123",
           permissions: null,
-          criminalsList: [],
+          records: [],
           mobile: "6666666666",
           creator: "639c971579cd39c18dab3527",
         },
@@ -67,7 +67,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root, read",
             email: "test",
             name: "test",
-            criminalsList: [],
+            records: [],
             mobile: "6666666666",
             creator: "639c971579cd39c18dab3527",
           });
@@ -151,7 +151,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root",
             email: "test",
             name: "test",
-            criminalsList: [],
+            records: [],
             mobile: "6666666666",
             creator: "639c971579cd39c18dab3527",
           });
@@ -216,7 +216,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root",
             email: "test",
             name: "test",
-            criminalsList: [],
+            records: [],
             mobile: "6666666666",
             creator: "639c971579cd39c18dab3527",
           });
@@ -266,7 +266,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
             permissions: "root",
             email: "test",
             name: "test",
-            criminalsList: [],
+            records: [],
             mobile: "6666666666",
             creator: "639c971579cd39c18dab3527",
           });

@@ -10,7 +10,7 @@ const deleteUserController = async (req, res, next) => {
       throw error;
     }
     const user = await User.findById(userId);
-    
+
     if (!user) {
       const error = new Error("User not found.");
       throw error;

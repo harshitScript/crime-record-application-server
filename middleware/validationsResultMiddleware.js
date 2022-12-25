@@ -8,7 +8,7 @@ const validationsResultMiddleware = (req, res, next) => {
 
     return 1;
   } else {
-    res.status(415).json({
+    res.status(400).json({
       errors: validationErrors?.errors,
     });
 

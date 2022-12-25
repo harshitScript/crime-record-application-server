@@ -22,7 +22,7 @@ const createUserController = async (req, res, next) => {
       name,
       email,
       mobile,
-      criminalsList: [],
+      records: [],
       imageData: {
         url: image.location,
         key: image?.key,
