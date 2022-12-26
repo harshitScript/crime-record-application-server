@@ -78,7 +78,20 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           name: "test test",
           mobile: "77777777777",
           address: "test test test",
-          crimes: ["test crime"],
+          city: "test",
+          state: "test state",
+          crimes: [
+            {
+              place: {
+                city: "xyz",
+                state: "xyz",
+                address: "xyz",
+              },
+              timeStamp: 12345678,
+              description: "test description",
+              category: "A",
+            },
+          ],
         },
         userId: testUser._id,
       };

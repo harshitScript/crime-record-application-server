@@ -1,10 +1,12 @@
 const { expect } = require("chai");
+const axios = require("axios");
 const sinon = require("sinon");
 const mongoose = require("mongoose");
 const Configuration = require("../models/configuration");
 const configurationController = require("../controllers/general/configurationController");
 const whoIAmController = require("../controllers/general/whoIAmController");
 const addConfigurationController = require("../controllers/general/addConfigurationController");
+const findPinCodeDataController = require("../controllers/general/findPinCodeDataController");
 
 describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
   describe("whoIAmController", () => {
@@ -139,6 +141,44 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
       };
       addConfigurationController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("findPinCodeDataController", () => {
+    it("should throw an error if pinCode endpoint is out of service.", (done) => {
+      const req = {
+        body: {
+          pinCode: 458001,
+        },
+      };
+      sinon.stub(axios, "request");
+      axios.request.throws();
+      findPinCodeDataController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        axios.request.restore();
+        done();
+      });
+    });
+    it("should return pinCode mapped data if all goes fine", (done) => {
+      const req = {
+        body: {
+          pinCode: 458001,
+        },
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.haveOwnProperty("state");
+          expect(obj).to.haveOwnProperty("city");
+          expect(obj).to.haveOwnProperty("pinCode");
+        },
+      };
+      const next = (error) => {
+        console.log("The error =>", error.message);
+      };
+      findPinCodeDataController(req, res, next).then((res) => {
+        expect(res).to.be.equals(1);
+        axios.request.restore();
         done();
       });
     });

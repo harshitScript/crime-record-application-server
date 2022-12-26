@@ -2,8 +2,7 @@ const Record = require("../../models/record.js");
 const User = require("../../models/user.js");
 
 const createRecordController = async (req, res, next) => {
-  const { name, mobile, address, crimes } = req.body;
-  console.log("The crimes => ", crimes);
+  const { name, mobile, address, crimes, city, state } = req.body;
 
   try {
     const authUser = await User.findById(req.userId);
@@ -16,6 +15,8 @@ const createRecordController = async (req, res, next) => {
       address,
       mobile,
       name,
+      city,
+      state,
       crimes,
       imageData: {},
     });

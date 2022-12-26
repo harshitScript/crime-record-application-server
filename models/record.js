@@ -15,17 +15,39 @@ const recordSchema = new Schema(
       type: String,
       required: true,
     },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
     crimes: {
-      type: [String],
+      type: [{}],
       required: true,
     },
     imageData: {
       type: {
         urls: {
-          type: [String],
+          type: {
+            front: {
+              type: String,
+            },
+            side: {
+              type: String,
+            },
+          },
         },
         keys: {
-          type: [String],
+          type: {
+            front: {
+              type: String,
+            },
+            side: {
+              type: String,
+            },
+          },
         },
       },
       required: true,
