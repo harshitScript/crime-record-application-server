@@ -4,6 +4,7 @@ const User = require("../models/user");
 const Record = require("../models/record");
 const createRecordController = require("../controllers/record/createRecordController");
 const { default: mongoose } = require("mongoose");
+const listRecordsController = require("../controllers/record/listRecordsController");
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   describe("createRecordController", () => {
@@ -36,7 +37,8 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       User.deleteMany({})
         .then(() => Record.deleteMany({}))
         .then(() => mongoose.disconnect())
-        .then(() => done());
+        .then(() => done())
+        .catch((error) => console.log(error.message));
     });
     it("should throw an error if database refuses connection", (done) => {
       const req = {
@@ -118,6 +120,34 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
             done();
           }
         });
+    });
+    describe("listRecordsController", () => {
+      before((done) => {
+        mongoose.connect(process.env.MONGO_URI).then(() => done());
+      });
+      after((done) => {
+        mongoose.disconnect().then(() => done());
+      });
+      it("should throw an error if database refuses connection.", (done) => {
+        sinon.stub(Record, "findById");
+        Record.findById.throws();
+        listRecordsController({}, {}, () => {}).then((res) => {
+          expect(res).to.be.equals(0);
+          Record.findById.restore();
+          done();
+        });
+      });
+      it("should return a list of records if all goes fine.", (done) => {
+        const res = {
+          json(obj) {
+            expect(obj).to.haveOwnProperty("records");
+          },
+        };
+        listRecordsController({}, res, () => {}).then((res) => {
+          expect(res).to.be.equals(1);
+          done();
+        });
+      });
     });
   });
 });

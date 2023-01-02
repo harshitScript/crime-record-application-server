@@ -5,6 +5,7 @@ const createRecordController = require("../controllers/record/createRecordContro
 const authenticationCheckerMIddleware = require("../middleware/authenticationCheckerMIddleware");
 const createRecordValidations = require("../validations/createRecordValidations");
 const validationsResultMiddleware = require("../middleware/validationsResultMiddleware");
+const listRecordsController = require("../controllers/record/listRecordsController");
 
 //* POST /record/create
 recordRoutes.post(
@@ -14,6 +15,13 @@ recordRoutes.post(
   createRecordValidations,
   validationsResultMiddleware,
   createRecordController
+);
+
+//* GET /record/list/:page
+recordRoutes.get(
+  "/list/:page",
+  authenticationCheckerMIddleware,
+  listRecordsController
 );
 
 module.exports = recordRoutes;

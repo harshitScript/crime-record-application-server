@@ -263,7 +263,7 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
               url: "test",
             },
             password: "TEST",
-            permissions: "root",
+            permissions: "read",
             email: "test",
             name: "test",
             records: [],
@@ -340,6 +340,9 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         json(obj) {
           expect(obj).to.haveOwnProperty("message");
         },
+      };
+      const next = (error) => {
+        console.log(error.message);
       };
       deleteUserController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
