@@ -3,6 +3,7 @@ const multerS3 = require("multer-s3");
 const multer = require("multer");
 
 const fileFilter = (req, file, cb) => {
+  console.log("The file => ", file);
   if (
     file.mimetype === "image/jpeg" ||
     file.mimetype === "image/png" ||
@@ -27,6 +28,7 @@ const s3Uploads = (folder = "") => {
       contentDisposition: "inline",
       acl: "public-read",
       key: (req, file, cb) => {
+        console.log("The file here => ", file, folder);
         return cb(
           null,
           `${process.env.APPLICATION_CODE}/${process.env.APP_PHASE}/${folder}/${file.originalname}`

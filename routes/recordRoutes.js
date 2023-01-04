@@ -6,6 +6,9 @@ const authenticationCheckerMIddleware = require("../middleware/authenticationChe
 const createRecordValidations = require("../validations/createRecordValidations");
 const validationsResultMiddleware = require("../middleware/validationsResultMiddleware");
 const listRecordsController = require("../controllers/record/listRecordsController");
+const s3Uploads = require("../multer/multer.s3");
+const recordImageUploadController = require("../controllers/record/recordImageUploadController");
+const uploadCheckerMiddleware = require("../middleware/uploadCheckerMiddleware");
 
 //* POST /record/create
 recordRoutes.post(
@@ -22,6 +25,14 @@ recordRoutes.get(
   "/list/:page",
   authenticationCheckerMIddleware,
   listRecordsController
+);
+
+//* POST /record/:recordId/uploads/:type
+recordRoutes.post(
+  "/:recordId/uploads/:type",
+  s3Uploads("records").single("image"),
+  uploadCheckerMiddleware,
+  recordImageUploadController
 );
 
 module.exports = recordRoutes;

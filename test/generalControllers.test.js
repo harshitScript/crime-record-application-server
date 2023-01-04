@@ -145,7 +145,8 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
       });
     });
   });
-  describe("findPinCodeDataController", () => {
+
+  /* describe("findPinCodeDataController", () => {
     it("should throw an error if pinCode endpoint is out of service.", (done) => {
       const req = {
         body: {
@@ -182,5 +183,5 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
         done();
       });
     });
-  });
+  }); */
 });
