@@ -21,11 +21,11 @@ const deleteUserController = async (req, res, next) => {
       throw error;
     }
     await s3
-      .deleteObject({
+      ?.deleteObject({
         Bucket: process.env.S3_BUCKET,
         Key: user?.imageData?.key,
       })
-      .promise();
+      ?.promise();
     await user.delete();
     res.json({
       message: "User deleted successfully.",

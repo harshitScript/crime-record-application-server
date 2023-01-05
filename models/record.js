@@ -59,13 +59,16 @@ const recordSchema = new Schema(
 );
 
 recordSchema.methods.addImage = function ({ type = "", url = "", key = "" }) {
-  const imageData = this.imageData;
-  imageData.urls = { ...imageData?.urls };
-  imageData.urls[type] = url;
-  imageData.keys = { ...imageData?.keys };
-  imageData.keys[type] = key;
-  this.imageData = imageData;
+  this.imageData.urls = { ...imageData?.urls };
+  this.imageData.urls[type] = url;
+  this.imageData.keys = { ...imageData?.keys };
+  this.imageData.keys[type] = key;
+  return this.save();
+};
 
+recordSchema.methods.deleteImage = function ({ type = "" }) {
+  this.imageData.urls[type] = undefined;
+  this.imageData.keys[type] = undefined;
   return this.save();
 };
 

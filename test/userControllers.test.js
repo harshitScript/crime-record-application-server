@@ -9,6 +9,7 @@ const loginUserController = require("../controllers/user/loginUserController");
 const getUserInfoController = require("../controllers/user/getUserInfoController");
 const listUsersController = require("../controllers/user/listUsersController");
 const deleteUserController = require("../controllers/user/deleteUserController");
+const s3 = require("../aws/s3");
 config();
 
 describe("USER CONTROLLERS TESTING SUITE >>>", () => {
@@ -342,10 +343,13 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       const next = (error) => {
-        console.log(error.message);
+        console.info(error.message);
       };
-      deleteUserController(req, res, () => {}).then((res) => {
+      sinon.stub(s3, "deleteObject");
+      s3.deleteObject.returns(true);
+      deleteUserController(req, res, next).then((res) => {
         expect(res).to.be.equals(1);
+        s3.deleteObject.restore();
         done();
       });
     });

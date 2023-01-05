@@ -6,6 +6,8 @@ const createRecordController = require("../controllers/record/createRecordContro
 const { default: mongoose } = require("mongoose");
 const listRecordsController = require("../controllers/record/listRecordsController");
 const recordImageUploadController = require("../controllers/record/recordImageUploadController");
+const recordImageDeleteController = require("../controllers/record/recordImageDeleteController");
+const s3 = require("../aws/s3");
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   let testUser = {};
@@ -21,7 +23,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           },
           password: "TEST",
           permissions: "root",
-          email: "test",
+          email: "test@gmail.com",
           name: "test",
           records: [],
           mobile: "6666666666",
@@ -32,7 +34,8 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       .then((user) => {
         testUser = user;
         done();
-      });
+      })
+      .catch((error) => console.log("The error message => ", error.message));
   });
   after((done) => {
     User.deleteMany({})
@@ -175,6 +178,19 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         done();
       });
     });
+
+    it("should throw an error if the type of image does not match.", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+          type: "rear",
+        },
+      };
+      recordImageUploadController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
     it("should throw an error if database refuse connection.", (done) => {
       const req = {
         params: {
@@ -226,10 +242,118 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           expect(obj).to.haveOwnProperty("type");
         },
       };
-      const next = (error) => {
-        console.log("The error message => ", error.message);
-      };
+      const next = () => {};
       recordImageUploadController(req, res, next).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+  });
+  describe("recordImageDeleteController", () => {
+    let testRecord = {};
+    before((done) => {
+      const record = new Record({
+        address: "test address",
+        city: "test city",
+        crimes: [
+          {
+            place: {
+              city: "xyz",
+              state: "xyz",
+              address: "xyz",
+            },
+            timeStamp: 12345678,
+            description: "test description",
+            category: "A",
+          },
+        ],
+        name: "test user",
+        state: "test state",
+        mobile: 9407541209,
+        imageData: {
+          urls: {
+            front: "",
+          },
+          keys: {
+            front: "",
+          },
+        },
+      });
+
+      record.save().then((record) => {
+        testRecord = record;
+        done();
+      });
+    });
+
+    it("should throw an error if the type of image does not match.", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+          type: "rear",
+        },
+      };
+      recordImageDeleteController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should throw an error id database refuses connection.", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+          type: "front",
+        },
+      };
+      sinon.stub(Record, "findById");
+      Record.findById.throws();
+      recordImageDeleteController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        Record.findById.restore();
+        done();
+      });
+    });
+    it("should throw an error if record not found.", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+          type: "side",
+        },
+      };
+      recordImageDeleteController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should delete an image if all goes fine.", () => {
+      const req = {
+        params: {
+          recordId: testRecord?._id,
+          type: "front",
+        },
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.haveOwnProperty("message");
+          expect(obj).to.haveOwnProperty("type");
+        },
+      };
+      sinon.stub(s3, "deleteObject");
+      s3.deleteObject.returns(true);
+      recordImageDeleteController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
+        s3.deleteObject.restore();
+        done();
+      });
+    });
+    it("should throw an error if a image is already deleted.", (done) => {
+      const req = {
+        params: {
+          recordId: testRecord?._id,
+          type: "front",
+        },
+      };
+      recordImageDeleteController(req, {}, () => {}).then((res) => {
         expect(res).to.be.equals(0);
         done();
       });

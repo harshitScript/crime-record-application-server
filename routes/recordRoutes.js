@@ -9,6 +9,7 @@ const listRecordsController = require("../controllers/record/listRecordsControll
 const s3Uploads = require("../multer/multer.s3");
 const recordImageUploadController = require("../controllers/record/recordImageUploadController");
 const uploadCheckerMiddleware = require("../middleware/uploadCheckerMiddleware");
+const recordImageDeleteController = require("../controllers/record/recordImageDeleteController");
 
 //* POST /record/create
 recordRoutes.post(
@@ -33,6 +34,13 @@ recordRoutes.post(
   s3Uploads("records").single("image"),
   uploadCheckerMiddleware,
   recordImageUploadController
+);
+
+//* DELETE /record/:recordId/delete/:type
+recordRoutes.delete(
+  "/:recordId/delete/:type",
+ /*  authenticationCheckerMIddleware, */
+  recordImageDeleteController
 );
 
 module.exports = recordRoutes;

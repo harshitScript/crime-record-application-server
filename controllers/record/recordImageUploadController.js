@@ -3,7 +3,17 @@ const recordImageUploadController = async (req, res, next) => {
   const { recordId, type } = req.params;
   const uploadedImage = req.file;
 
+  const imagesType = {
+    front: true,
+    side: true,
+  };
+
   try {
+    if (!imagesType?.[type]) {
+      const error = new Error("The type of image not found.");
+      throw error;
+    }
+
     const record = await Record.findById(recordId);
     if (!record) {
       const error = new Error("Corresponding record not found.");
