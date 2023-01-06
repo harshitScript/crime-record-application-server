@@ -8,6 +8,7 @@ const listRecordsController = require("../controllers/record/listRecordsControll
 const recordImageUploadController = require("../controllers/record/recordImageUploadController");
 const recordImageDeleteController = require("../controllers/record/recordImageDeleteController");
 const s3 = require("../aws/s3");
+const getRecordInfoController = require("../controllers/record/getRecordInfoController");
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   let testUser = {};
@@ -275,7 +276,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
             front: "",
           },
           keys: {
-            front: "",
+            front: "xyz",
           },
         },
       });
@@ -325,7 +326,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         done();
       });
     });
-    it("should delete an image if all goes fine.", () => {
+    it("should delete an image if all goes fine.", (done) => {
       const req = {
         params: {
           recordId: testRecord?._id,
@@ -338,9 +339,17 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           expect(obj).to.haveOwnProperty("type");
         },
       };
+      const next = (error) => {
+        console.log("The error is => ", error.message);
+        return;
+      };
       sinon.stub(s3, "deleteObject");
-      s3.deleteObject.returns(true);
-      recordImageDeleteController(req, res, () => {}).then((res) => {
+      s3.deleteObject.returns({
+        promise: () => {
+          return true;
+        },
+      });
+      recordImageDeleteController(req, res, next).then((res) => {
         expect(res).to.be.equals(1);
         s3.deleteObject.restore();
         done();
@@ -355,6 +364,74 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       recordImageDeleteController(req, {}, () => {}).then((res) => {
         expect(res).to.be.equals(0);
+        done();
+      });
+    });
+  });
+  describe("getRecordInfoController", () => {
+    let testRecord = {};
+    before((done) => {
+      const record = new Record({
+        address: "test address",
+        city: "test city",
+        crimes: [
+          {
+            place: {
+              city: "xyz",
+              state: "xyz",
+              address: "xyz",
+            },
+            timeStamp: 12345678,
+            description: "test description",
+            category: "A",
+          },
+        ],
+        name: "test user 2",
+        state: "test state",
+        mobile: 9407541209,
+        imageData: {
+          urls: {
+            front: "",
+          },
+          keys: {
+            front: "xyz",
+          },
+        },
+      });
+
+      record.save().then((record) => {
+        testRecord = record;
+        done();
+      });
+    });
+
+    it("should throw an error if database refuses connection.", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+        },
+      };
+      sinon.stub(Record, "findById");
+      Record.findById.throws();
+      getRecordInfoController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        Record.findById.restore();
+        done();
+      });
+    });
+    it("should return a record if all goes fine.", (done) => {
+      const req = {
+        params: {
+          recordId: testRecord?._id,
+        },
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.haveOwnProperty("record");
+        },
+      };
+      getRecordInfoController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
         done();
       });
     });

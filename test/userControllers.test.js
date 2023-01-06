@@ -346,7 +346,11 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         console.info(error.message);
       };
       sinon.stub(s3, "deleteObject");
-      s3.deleteObject.returns(true);
+      s3.deleteObject.returns({
+        promise: () => {
+          return true;
+        },
+      });
       deleteUserController(req, res, next).then((res) => {
         expect(res).to.be.equals(1);
         s3.deleteObject.restore();
