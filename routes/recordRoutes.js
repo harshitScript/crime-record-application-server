@@ -32,7 +32,7 @@ recordRoutes.get(
 
 //* GET /record/list-ids/:page
 recordRoutes.get(
-  "/list/:page",
+  "/list-ids/:page",
   authenticationCheckerMIddleware,
   listRecordsIdController
 );
