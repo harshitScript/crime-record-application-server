@@ -9,6 +9,7 @@ const recordImageUploadController = require("../controllers/record/recordImageUp
 const recordImageDeleteController = require("../controllers/record/recordImageDeleteController");
 const s3 = require("../aws/s3");
 const getRecordInfoController = require("../controllers/record/getRecordInfoController");
+const listRecordsIdController = require("../controllers/record/listRecordsIdController");
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   let testUser = {};
@@ -129,11 +130,11 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
     });
     describe("listRecordsController", () => {
       it("should throw an error if database refuses connection.", (done) => {
-        sinon.stub(Record, "findById");
-        Record.findById.throws();
+        sinon.stub(Record, "find");
+        Record.find.throws();
         listRecordsController({}, {}, () => {}).then((res) => {
           expect(res).to.be.equals(0);
-          Record.findById.restore();
+          Record.find.restore();
           done();
         });
       });
@@ -144,6 +145,28 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           },
         };
         listRecordsController({}, res, () => {}).then((res) => {
+          expect(res).to.be.equals(1);
+          done();
+        });
+      });
+    });
+    describe("listRecordsIdController", () => {
+      it("should throw an error if database refuses connection.", (done) => {
+        sinon.stub(Record, "find");
+        Record.find.throws();
+        listRecordsIdController({}, {}, () => {}).then((res) => {
+          expect(res).to.be.equals(0);
+          Record.find.restore();
+          done();
+        });
+      });
+      it("should return a list of records id if all goes fine.", (done) => {
+        const res = {
+          json(obj) {
+            expect(obj).to.haveOwnProperty("recordsId");
+          },
+        };
+        listRecordsIdController({}, res, () => {}).then((res) => {
           expect(res).to.be.equals(1);
           done();
         });
@@ -399,10 +422,15 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       });
 
-      record.save().then((record) => {
-        testRecord = record;
-        done();
-      });
+      record
+        .save()
+        .then((record) => {
+          testRecord = record;
+          done();
+        })
+        .catch((error) => {
+          console.log("The error => ", error.message);
+        });
     });
 
     it("should throw an error if database refuses connection.", (done) => {

@@ -11,7 +11,7 @@ const recordImageUploadController = require("../controllers/record/recordImageUp
 const uploadCheckerMiddleware = require("../middleware/uploadCheckerMiddleware");
 const recordImageDeleteController = require("../controllers/record/recordImageDeleteController");
 const getRecordInfoController = require("../controllers/record/getRecordInfoController");
-
+const listRecordsIdController = require("../controllers/record/listRecordsIdController");
 
 //* POST /record/create
 recordRoutes.post(
@@ -28,6 +28,13 @@ recordRoutes.get(
   "/list/:page",
   authenticationCheckerMIddleware,
   listRecordsController
+);
+
+//* GET /record/list-ids/:page
+recordRoutes.get(
+  "/list/:page",
+  authenticationCheckerMIddleware,
+  listRecordsIdController
 );
 
 //* POST /record/:recordId/uploads/:type
