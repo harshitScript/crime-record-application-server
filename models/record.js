@@ -59,9 +59,9 @@ const recordSchema = new Schema(
 );
 
 recordSchema.methods.addImage = function ({ type = "", url = "", key = "" }) {
-  this.imageData.urls = { ...imageData?.urls };
+  this.imageData.urls = { ...this.imageData?.urls };
   this.imageData.urls[type] = url;
-  this.imageData.keys = { ...imageData?.keys };
+  this.imageData.keys = { ...this.imageData?.keys };
   this.imageData.keys[type] = key;
   return this.save();
 };
