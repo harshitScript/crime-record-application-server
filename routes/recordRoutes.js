@@ -47,7 +47,7 @@ recordRoutes.post(
 
 //* DELETE /record/:recordId/delete-image/:type
 recordRoutes.delete(
-  "/:recordId/delete/:type",
+  "/:recordId/delete-image/:type",
   authenticationCheckerMIddleware,
   recordImageDeleteController
 );
