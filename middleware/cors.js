@@ -4,7 +4,10 @@ const cors = (req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"
   );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Content-Length, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Authorization"
+  );
   next();
 };
 
