@@ -27,6 +27,11 @@ const recordSchema = new Schema(
       type: [{}],
       required: true,
     },
+    creator: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
     imageData: {
       type: {
         urls: {

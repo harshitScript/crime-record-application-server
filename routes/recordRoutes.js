@@ -12,6 +12,8 @@ const uploadCheckerMiddleware = require("../middleware/uploadCheckerMiddleware")
 const recordImageDeleteController = require("../controllers/record/recordImageDeleteController");
 const getRecordInfoController = require("../controllers/record/getRecordInfoController");
 const listRecordsIdController = require("../controllers/record/listRecordsIdController");
+const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
+const deleteRecordViaRootController = require("../controllers/record/deleteRecord/deleteRecordViaRootController");
 
 //* POST /record/create
 recordRoutes.post(
@@ -59,4 +61,11 @@ recordRoutes.get(
   getRecordInfoController
 );
 
+//* DELETE /record/delete/:recordId
+recordRoutes.delete(
+  "/delete/:recordId",
+  authenticationCheckerMIddleware,
+  deleteRecordController,
+  deleteRecordViaRootController
+);
 module.exports = recordRoutes;

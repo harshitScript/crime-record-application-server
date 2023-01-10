@@ -19,6 +19,7 @@ const createRecordController = async (req, res, next) => {
       state,
       crimes,
       imageData: {},
+      creator: req?.userId,
     });
     const createdRecord = await record.save();
 
