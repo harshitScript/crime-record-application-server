@@ -12,11 +12,12 @@ const deleteRecordController = async (req, res, next) => {
       throw error;
     }
 
-    const isRootUser = authUser?.permissions?.includes("root");
+    // TODO : in development
+    /* const isRootUser = authUser?.permissions?.includes("root");
     if (isRootUser) {
       next();
       return 1;
-    }
+    } */
 
     const record = await Record.findById(recordId);
     if (!record) {
@@ -24,8 +25,10 @@ const deleteRecordController = async (req, res, next) => {
       throw error;
     }
 
-    if (authUser?.toString() === record?.creator?.toString()) {
-      await record.delete();
+    if (authUserId?.toString() === record?.creator?.toString()) {
+      const response = await record.delete();
+
+      await authUser.removeRecord(response?._id);
 
       res.json({
         message: "Record deleted successfully.",
