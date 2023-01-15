@@ -10,6 +10,7 @@ const recordImageDeleteController = require("../controllers/record/recordImageDe
 const s3 = require("../aws/s3");
 const getRecordInfoController = require("../controllers/record/getRecordInfoController");
 const listRecordsIdController = require("../controllers/record/listRecordsIdController");
+const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   let testUser = {};
@@ -195,6 +196,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         state: "test state",
         mobile: 9407541209,
         imageData: {},
+        creator: testUser?._id,
       });
 
       record.save().then((record) => {
@@ -302,6 +304,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
             front: "xyz",
           },
         },
+        creator: testUser?._id,
       });
 
       record.save().then((record) => {
@@ -412,6 +415,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         name: "test user 2",
         state: "test state",
         mobile: 9407541209,
+        creator: "xyz",
         imageData: {
           urls: {
             front: "",
@@ -420,6 +424,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
             front: "xyz",
           },
         },
+        creator: testUser?._id,
       });
 
       record
@@ -459,6 +464,100 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       getRecordInfoController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("deleteRecordController", () => {
+    let testRecord = {};
+    before((done) => {
+      const record = new Record({
+        address: "xyz",
+        city: "test",
+        creator: testUser?._id,
+        crimes: [
+          {
+            place: {
+              city: "xyz",
+              state: "xyz",
+              address: "xyz",
+            },
+            timeStamp: 12345678,
+            description: "test description",
+            category: "A",
+          },
+        ],
+        imageData: {
+          urls: {
+            front: "",
+          },
+          keys: {
+            front: "xyz",
+          },
+        },
+        name: "xyz abc",
+        state: "test state",
+        mobile: 3333333333,
+      });
+
+      record.save().then((record) => {
+        testRecord = record;
+        done();
+      });
+    });
+    it("should throw an error if database refuses connection", (done) => {
+      const req = {
+        userId: "xyz",
+        params: {
+          recordId: "abc",
+        },
+      };
+      sinon.stub(Record, "findById");
+      Record.findById.throws();
+      deleteRecordController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        Record.findById.restore();
+        done();
+      });
+    });
+    it("should throw an error if authenticated user not found.", (done) => {
+      const req = {
+        userId: "xyz",
+        params: {
+          recordId: "abc",
+        },
+      };
+      deleteRecordController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should throw an error if record not found.", (done) => {
+      const req = {
+        userId: testUser?._id,
+        params: {
+          recordId: "abc",
+        },
+      };
+      deleteRecordController(req, {}, () => {}).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should delete a record if authorized user id  match with the creator of the record.", (done) => {
+      const req = {
+        userId: testUser?._id,
+        params: {
+          recordId: testRecord?._id,
+        },
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.haveOwnProperty("message");
+        },
+      };
+      deleteRecordController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
         done();
       });
