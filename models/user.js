@@ -59,9 +59,9 @@ userSchema.methods.addRecord = function (recordId = "") {
   return this.save();
 };
 userSchema.methods.removeRecord = function (recordId = "") {
-  let tempRecords = this.criminalsList;
+  let tempRecords = this.records;
 
-  tempRecords = tempCriminalsList.filter((id) => id.toString() !== recordId);
+  tempRecords = tempRecords.filter((id) => id.toString() !== recordId);
 
   this.records = tempRecords;
 
