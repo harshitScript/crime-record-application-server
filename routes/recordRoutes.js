@@ -33,11 +33,7 @@ recordRoutes.get(
 );
 
 //* GET /record/list-ids/:page
-recordRoutes.get(
-  "/list-ids/:page",
-  authenticationCheckerMIddleware,
-  listRecordsIdController
-);
+recordRoutes.get("/list-ids/:page", listRecordsIdController);
 
 //* POST /record/:recordId/uploads/:type
 recordRoutes.post(
@@ -55,11 +51,7 @@ recordRoutes.delete(
 );
 
 //* GET /record/:recordId
-recordRoutes.get(
-  "/:recordId",
-  authenticationCheckerMIddleware,
-  getRecordInfoController
-);
+recordRoutes.get("/:recordId", getRecordInfoController);
 
 //* DELETE /record/delete/:recordId
 recordRoutes.delete(
