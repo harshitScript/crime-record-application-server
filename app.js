@@ -16,6 +16,7 @@ const { connectMongoDb } = require("./database/mongodb");
 const cors = require("./middleware/cors");
 const userRoutes = require("./routes/userRoutes");
 const recordRoutes = require("./routes/recordRoutes");
+const visitorRoutes = require("./routes/visitorRoutes");
 
 //? MIDDLEWARE(s) ----------------------------------------------------------------------------
 app.use(cors);
@@ -29,6 +30,7 @@ app.use(
 app.use("/general", generalRoutes);
 app.use("/user", userRoutes);
 app.use("/record", recordRoutes);
+app.use("/visitor", visitorRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlingMiddleware);
 
