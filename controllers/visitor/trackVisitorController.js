@@ -1,6 +1,11 @@
-const trackVisitorController = (req, res, next) => {
-  console.log("The cookies recieved => ", req.cookies);
-  res.cookie("new", "skdjkjsdk", { httpOnly: true });
+const { generateHash } = require("../../utils/helper");
+const trackVisitorController = (req, res) => {
+  console.log("The request cookies => ", req.cookies);
+  res.cookie(
+    "v.id",
+    generateHash({ string: Math.random(), secret: process.env.VISITOR_SECRET }),
+    { secure: true, httpOnly: true }
+  );
   res.status(201).json({
     message: "Cookie set successfully",
   });

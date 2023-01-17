@@ -4,6 +4,7 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const { config } = require("dotenv");
+const cookieParser = require("cookie-parser");
 const app = express();
 config();
 
@@ -30,7 +31,7 @@ app.use(
 app.use("/general", generalRoutes);
 app.use("/user", userRoutes);
 app.use("/record", recordRoutes);
-app.use("/visitor", visitorRoutes);
+app.use("/visitor", cookieParser(), visitorRoutes);
 app.use(notFoundMiddleware);
 app.use(errorHandlingMiddleware);
 
