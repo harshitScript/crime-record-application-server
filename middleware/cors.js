@@ -9,7 +9,7 @@ const cors = (req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "Content-Type, Content-Length, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Authorization"
+    "Content-Type, Content-Length, Access-Control-Allow-Methods, Access-Control-Allow-Origin, Authorization, withCredentials"
   );
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
