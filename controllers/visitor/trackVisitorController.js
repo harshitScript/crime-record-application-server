@@ -15,6 +15,7 @@ const trackVisitorController = (req, res) => {
       httpOnly: true,
       expires: date,
       secure: true,
+      sameSite: "none",
     }
   );
   res.status(201).json({
