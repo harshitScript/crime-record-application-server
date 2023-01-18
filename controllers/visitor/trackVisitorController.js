@@ -3,6 +3,8 @@ const trackVisitorController = (req, res) => {
   const date = new Date();
   date.setFullYear(date.getFullYear() + 1);
 
+  console.log("The cookies => ", req.cookies);
+
   res.cookie(
     "v.id",
     generateHash({
