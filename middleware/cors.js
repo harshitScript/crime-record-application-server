@@ -1,7 +1,7 @@
 const cors = (req, res, next) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://crime-record-application-client.vercel.app/"
+    "https://crime-record-application-client.vercel.app"
   );
   res.setHeader(
     "Access-Control-Allow-Methods",
