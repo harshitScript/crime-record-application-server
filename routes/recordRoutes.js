@@ -14,6 +14,7 @@ const getRecordInfoController = require("../controllers/record/getRecordInfoCont
 const listRecordsIdController = require("../controllers/record/listRecordsIdController");
 const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
 const deleteRecordViaRootController = require("../controllers/record/deleteRecord/deleteRecordViaRootController");
+const recordPdfController = require("../controllers/record/recordPdfController");
 
 //* POST /record/create
 recordRoutes.post(
@@ -60,4 +61,8 @@ recordRoutes.delete(
   deleteRecordController,
   deleteRecordViaRootController
 );
+
+//* GET /records/:recordId/pdf
+recordRoutes.get("/:recordId/pdf", recordPdfController);
+
 module.exports = recordRoutes;
