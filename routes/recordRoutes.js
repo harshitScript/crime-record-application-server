@@ -62,7 +62,7 @@ recordRoutes.delete(
   deleteRecordViaRootController
 );
 
-//* GET /records/:recordId/pdf
+//* GET /record/:recordId/pdf
 recordRoutes.get("/:recordId/pdf", recordPdfController);
 
 module.exports = recordRoutes;
