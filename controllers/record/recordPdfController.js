@@ -23,19 +23,28 @@ const recordPdfController = async (req, res, next) => {
       `record_${record?._id}.pdf`
     );
     const pdfContent = prepareRecordPdfHTML(record);
-    await pdfUtils.generate({ path: pdfPath, htmlString: pdfContent });
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-      "Content-Disposition",
-      `inline:filename=record_${record?._id}.pdf`
-    );
-    const pdfStream = fs.createReadStream(pdfPath);
-    pdfStream.pipe(res);
-    pdfStream.on("end", () => {
-      //? will delete the pdf in background.
-      res.end();
-      pdfUtils.delete({ path: pdfPath });
+    const result = await pdfUtils.generate({
+      path: pdfPath,
+      htmlString: pdfContent,
     });
+    console.log("The pdf generation result => ", result);
+    if (result) {
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `inline:filename=record_${record?._id}.pdf`
+      );
+      const pdfStream = fs.createReadStream(pdfPath);
+      pdfStream.pipe(res);
+      pdfStream.on("end", () => {
+        //? will delete the pdf in background.
+        res.end();
+        pdfUtils.delete({ path: pdfPath });
+      });
+    } else {
+      const error = new Error("Failed to generate pdf.");
+      throw error;
+    }
 
     return 1;
   } catch (error) {
