@@ -34,7 +34,8 @@ const pdfUtils = {
       await browser.close();
 
       return 1;
-    } catch {
+    } catch (error) {
+      console.log("The pdf generation error => ", error);
       return 0;
     }
 
