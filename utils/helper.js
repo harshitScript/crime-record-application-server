@@ -1,6 +1,8 @@
 const { createHmac } = require("crypto");
 const puppeteer = require("puppeteer");
 const fs = require("fs/promises");
+const path = require("path");
+const rootDir = require("./rootDir");
 
 const generateExpiryInMilSeconds = ({ hours = 1 }) => {
   const currentDate = new Date();
@@ -15,7 +17,7 @@ const generateHash = ({ algorithm = "sha512", string = "", secret = "" }) => {
 };
 
 const pdfUtils = {
-  generate: async ({ path = "", htmlString = "" }) => {
+  generate: async ({ pathArray = [], htmlString = "" }) => {
     //* PDF GENERATION CODE. ----------------------------------------------------
     try {
       //? launches puppeteer in the browser.
@@ -28,7 +30,7 @@ const pdfUtils = {
       await page.setContent(htmlString);
       //? Creates a pdf document
       await page.pdf({
-        path: path,
+        path: path.join(rootDir, ...pathArray),
         format: "A4",
         printBackground: true,
       });

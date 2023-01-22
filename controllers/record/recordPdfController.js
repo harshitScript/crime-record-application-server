@@ -16,6 +16,7 @@ const recordPdfController = async (req, res, next) => {
     }
 
     //* PDF FUNCTIONALITY
+    const pdfPathArray = ["assets", "pdf", `record_${record?._id}.pdf`];
     const pdfPath = path.join(
       rootDir,
       "assets",
@@ -24,10 +25,10 @@ const recordPdfController = async (req, res, next) => {
     );
     const pdfContent = prepareRecordPdfHTML(record);
     const result = await pdfUtils.generate({
-      path: pdfPath,
+      pathArray: pdfPathArray,
       htmlString: pdfContent,
     });
-    console.log("The pdf generation result => ", result);
+
     if (result) {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
