@@ -19,7 +19,9 @@ const pdfUtils = {
     //* PDF GENERATION CODE. ----------------------------------------------------
     try {
       //? launches puppeteer in the browser.
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        args: ["--no-sandbox", "--disabled-setupid-sandbox"],
+      });
       //? Opens a new page.
       const page = await browser.newPage();
       //? Sets content for the page
