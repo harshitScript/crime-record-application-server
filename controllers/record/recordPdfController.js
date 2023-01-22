@@ -1,6 +1,8 @@
 const Record = require("../../models/record");
 const pdf = require("html-pdf");
 const prepareRecordPdfHTML = require("../../PDF-HTML/record-pdf");
+const path = require("path");
+const rootDir = require("../../utils/rootDir");
 
 const recordPdfController = async (req, res, next) => {
   const { recordId } = req.params;
@@ -12,8 +14,26 @@ const recordPdfController = async (req, res, next) => {
       throw error;
     }
 
+    let options = {
+      format: "A4",
+      orientation: "portrait",
+      phantomPath: path.join(
+        rootDir,
+        "node_modules",
+        "phantomjs-prebuilt",
+        "bin",
+        "phantomjs"
+      ),
+      border: {
+        top: "1cm", // default is 0, units: mm, cm, in, px
+        right: "2cm",
+        bottom: "1cm",
+        left: "1cm",
+      },
+    };
+
     pdf
-      .create(prepareRecordPdfHTML(record))
+      .create(prepareRecordPdfHTML(record, options))
       .toStream(function (err, pdfStream) {
         if (err) {
           throw err;
