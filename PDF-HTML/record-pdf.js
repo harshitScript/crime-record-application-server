@@ -18,6 +18,11 @@ const recordPDFTemplate = `
         font-size: 12px;
         border-bottom: 1px solid black;
       }
+      .crimes-table td {
+        text-align: center;
+        font-size: 10px;
+        border-bottom: 0.5px solid grey;
+      }
     </style>
   </head>
   <body>
@@ -35,6 +40,9 @@ const recordPDFTemplate = `
     <h3 style="text-align: center; font-size: 20px; margin: unset">
       %recordName%
     </h3>
+    <p style="text-align: center; font-size: 10px; margin: unset">
+      UID: %uid%
+    </p>
     <table style="width: 100%">
       <tr>
         <td style="text-align: left; width: 50%; font-size: 12px">
@@ -77,12 +85,12 @@ const recordPDFTemplate = `
       <table class="crimes-table">
         <tr>
           <th>S.no.</th>
-          <th>Name</th>
           <th>City</th>
           <th>State</th>
           <th>Date & Time</th>
           <th>Description</th>
         </tr>
+        %crimes%
       </table>
     </div>
   </body>
@@ -92,6 +100,7 @@ const recordPDFTemplate = `
 const prepareRecordPdfHTML = (record = {}) => {
   const resultHTML = recordPDFTemplate
     .replace("%recordName%", record?.name)
+    .replace("%uid%", record?._id)
     .replace("%mobile%", record?.mobile)
     .replace("%cityAndState%", `${record?.city}, ${record?.state}`)
     .replace(
@@ -103,6 +112,22 @@ const prepareRecordPdfHTML = (record = {}) => {
       "%side-image%",
       record?.imageData?.urls?.front ||
         path.join(rootDir, "assets", "utils", "record-generic-image.jpeg")
+    )
+    .replace(
+      "%crimes%",
+      record?.crimes
+        .map(
+          (crime, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${crime?.place?.city}</td>
+          <td>${crime?.place?.state}</td>
+          <td>${crime?.dateAndTime}</td>
+          <td>${crime?.description}</td>
+        </tr>
+    `
+        )
+        ?.join("")
     );
   return resultHTML;
 };

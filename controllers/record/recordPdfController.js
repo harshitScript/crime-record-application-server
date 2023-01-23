@@ -44,7 +44,7 @@ const recordPdfController = async (req, res, next) => {
     return 1;
   } catch (error) {
     next(error);
-    return 1;
+    return 0;
   }
 };
 module.exports = recordPdfController;

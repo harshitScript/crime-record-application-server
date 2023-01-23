@@ -1,4 +1,5 @@
 const { expect } = require("chai");
+const fs = require("fs");
 const sinon = require("sinon");
 const User = require("../models/user");
 const Record = require("../models/record");
@@ -11,6 +12,8 @@ const s3 = require("../aws/s3");
 const getRecordInfoController = require("../controllers/record/getRecordInfoController");
 const listRecordsIdController = require("../controllers/record/listRecordsIdController");
 const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
+const recordPdfController = require("../controllers/record/recordPdfController");
+const { pdfUtils } = require("../utils/helper");
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   let testUser = {};
@@ -559,6 +562,121 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       deleteRecordController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("recordPdfController", () => {
+    let testRecord = {};
+    before((done) => {
+      const record = new Record({
+        address: "xyz",
+        city: "test",
+        creator: testUser?._id,
+        crimes: [
+          {
+            place: {
+              city: "xyz",
+              state: "xyz",
+              address: "xyz",
+            },
+            timeStamp: 12345678,
+            description: "test description",
+            category: "A",
+          },
+        ],
+        imageData: {
+          urls: {
+            front: "",
+          },
+          keys: {
+            front: "xyz",
+          },
+        },
+        name: "xyz abc",
+        state: "test state",
+        mobile: 3333333333,
+      });
+
+      record.save().then((record) => {
+        testRecord = record;
+        done();
+      });
+    });
+    it("should throw an error if database refuses connection.", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+        },
+      };
+      const next = (error) => {
+        console.log("The error message => ", error?.message);
+      };
+      sinon.stub(Record, "findById");
+      Record.findById.throws();
+      recordPdfController(req, {}, next).then((res) => {
+        expect(res).to.be.equals(0);
+        Record.findById.restore();
+        done();
+      });
+    });
+    it("should throws an error if failed to generate the pdf.", (done) => {
+      const req = {
+        params: {
+          recordId: testRecord?._id,
+        },
+      };
+      const next = (error) => {
+        console.log("The error message => ", error?.message);
+      };
+      sinon.stub(pdfUtils, "generate");
+      pdfUtils.generate.returns(false);
+      recordPdfController(req, {}, next).then((res) => {
+        expect(res).to.be.equals(0);
+        pdfUtils.generate.restore();
+        done();
+      });
+    });
+    it("should successfully return a pdf to the client.", (done) => {
+      const req = {
+        params: {
+          recordId: testRecord?._id,
+        },
+      };
+      const res = {
+        end: () => {},
+        setHeader: (key, value) => {
+          expect(
+            key === "Content-Type" || key === "Content-Disposition"
+          ).to.be.equals(true);
+          expect(
+            value === "application/pdf" ||
+              value === `inline:filename=record_${testRecord?._id}.pdf`
+          ).to.be.equals(true);
+        },
+      };
+      const next = (error) => {
+        console.log("The error message => ", error?.message);
+      };
+      sinon.stub(pdfUtils, "generate");
+      pdfUtils.generate.returns(true);
+      sinon.stub(pdfUtils, "delete");
+      pdfUtils.delete.returns(true);
+      sinon.stub(fs, "createReadStream");
+      fs.createReadStream.returns({
+        pipe: (res) => {
+          expect(res).to.haveOwnProperty("end");
+          expect(res).to.haveOwnProperty("setHeader");
+        },
+        on: (event) => {
+          expect(event).to.be.equals("end");
+        },
+      });
+      recordPdfController(req, res, next).then((res) => {
+        expect(res).to.be.equals(1);
+        pdfUtils.generate.restore();
+        pdfUtils.delete.restore();
+        fs.createReadStream.restore();
         done();
       });
     });
