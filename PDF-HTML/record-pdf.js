@@ -110,7 +110,7 @@ const prepareRecordPdfHTML = (record = {}) => {
     )
     .replace(
       "%side-image%",
-      record?.imageData?.urls?.front ||
+      record?.imageData?.urls?.side ||
         path.join(rootDir, "assets", "utils", "record-generic-image.jpeg")
     )
     .replace(
