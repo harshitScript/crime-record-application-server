@@ -67,4 +67,9 @@ userSchema.methods.removeRecord = function (recordId = "") {
 
   return this.save();
 };
+userSchema.methods.replaceImage = function ({ url = "", key = "" }) {
+  this.imageData.url = url;
+  this.imageData.key = key;
+  return this.save();
+};
 module.exports = mongoose.model("user", userSchema);
