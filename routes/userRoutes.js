@@ -14,6 +14,7 @@ const listUsersController = require("../controllers/user/listUsersController");
 const deleteUserController = require("../controllers/user/deleteUserController");
 const userImageDeleteMiddleware = require("../middleware/userImageDeleteMiddleware");
 const userImageReplaceController = require("../controllers/user/userImageReplaceController");
+const resetPasswordRequestController = require("../controllers/user/resetPasswordRequestController");
 
 //* POST /user/login
 userRoutes.post("/login", json(), loginUserController);
@@ -55,5 +56,8 @@ userRoutes.post(
   uploadCheckerMiddleware,
   userImageReplaceController
 );
+
+//* POST /user/reset-password
+userRoutes.post("/reset-password", json(), resetPasswordRequestController);
 
 module.exports = userRoutes;
