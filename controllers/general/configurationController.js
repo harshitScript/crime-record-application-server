@@ -11,6 +11,7 @@ const configurationController = async (req, res, next) => {
       throw error;
     }
 
+    res.setHeader("Content-Type", "application/json");
     res.json({
       data: response,
     });
