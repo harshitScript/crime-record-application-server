@@ -41,7 +41,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         testUser = user;
         done();
       })
-      .catch((error) => console.log("The error message => ", error.message));
+      .catch(() => {});
   });
   after((done) => {
     User.deleteMany({})
@@ -118,9 +118,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           return this;
         },
       };
-      const next = (error) => {
-        console.log("The error message => ", error.message);
-      };
+      const next = () => {};
       createRecordController(req, res, next)
         .then((res) => {
           expect(res).to.be.equals(1);
@@ -609,9 +607,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           recordId: "xyz",
         },
       };
-      const next = (error) => {
-        console.log("The error message => ", error?.message);
-      };
+      const next = () => {};
       sinon.stub(Record, "findById");
       Record.findById.throws();
       recordPdfController(req, {}, next).then((res) => {
@@ -626,9 +622,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           recordId: testRecord?._id,
         },
       };
-      const next = (error) => {
-        console.log("The error message => ", error?.message);
-      };
+      const next = () => {};
       sinon.stub(pdfUtils, "generate");
       pdfUtils.generate.returns(false);
       recordPdfController(req, {}, next).then((res) => {
@@ -655,9 +649,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
           ).to.be.equals(true);
         },
       };
-      const next = (error) => {
-        console.log("The error message => ", error?.message);
-      };
+      const next = () => {};
       sinon.stub(pdfUtils, "generate");
       pdfUtils.generate.returns(true);
       sinon.stub(pdfUtils, "delete");

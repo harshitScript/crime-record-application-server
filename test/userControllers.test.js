@@ -10,6 +10,7 @@ const getUserInfoController = require("../controllers/user/getUserInfoController
 const listUsersController = require("../controllers/user/listUsersController");
 const deleteUserController = require("../controllers/user/deleteUserController");
 const s3 = require("../aws/s3");
+const updateUserController = require("../controllers/user/updateUserController");
 config();
 
 describe("USER CONTROLLERS TESTING SUITE >>>", () => {
@@ -49,6 +50,88 @@ describe("USER CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       createUserController(req, res, () => {}).then((res) => {
+        expect(res).to.be.equals(1);
+        done();
+      });
+    });
+  });
+  describe("updateUserController", () => {
+    let testUser = {};
+    before(async () => {
+      await mongoose.connect(process.env.MONGO_URI);
+      const user = new User({
+        password: "test@user",
+        permissions: ["read"],
+        name: "Test test",
+        email: "test2@gmail.com",
+        mobile: "9407541209",
+        records: [],
+        imageData: {
+          url: "i m url",
+          key: "i m key",
+        },
+        creator: "639c971579cd39c18dab3527",
+      });
+
+      const resUser = await user.save();
+
+      testUser = resUser;
+    });
+    after((done) => {
+      User.deleteMany({})
+        .then(() => mongoose.disconnect())
+        .then(() => done());
+    });
+    it("should throws an error if database refuses to connect.", (done) => {
+      const req = {
+        body: {
+          name: "test test",
+          mobile: "8888990999",
+          email: "test@gmail.co",
+        },
+      };
+      const res = {};
+      const next = () => {};
+      sinon.stub(User, "findById");
+      User.findById.throws();
+      updateUserController(req, res, next).then((res) => {
+        expect(res).to.be.equals(0);
+        User.findById.restore();
+        done();
+      });
+    });
+    it("should throw an error if user not found.", (done) => {
+      const req = {
+        body: {
+          name: "test test",
+          mobile: "8888990999",
+          email: "test@gmail.co",
+        },
+        userId: "xyz",
+      };
+      const res = {};
+      const next = () => {};
+      updateUserController(req, res, next).then((res) => {
+        expect(res).to.be.equals(0);
+        done();
+      });
+    });
+    it("should update the user, if all goes well", (done) => {
+      const req = {
+        body: {
+          name: "test test",
+          mobile: "8888990999",
+          email: "test@gmail.co",
+        },
+        userId: testUser?._id,
+      };
+      const res = {
+        json(obj) {
+          expect(obj).to.haveOwnProperty("message");
+        },
+      };
+      const next = () => {};
+      updateUserController(req, res, next).then((res) => {
         expect(res).to.be.equals(1);
         done();
       });

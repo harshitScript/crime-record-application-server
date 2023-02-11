@@ -72,4 +72,10 @@ userSchema.methods.replaceImage = function ({ url = "", key = "" }) {
   this.imageData.key = key;
   return this.save();
 };
+userSchema.methods.edit = function ({ name = "", mobile = "", email = "" }) {
+  this.name = name;
+  this.mobile = mobile;
+  this.email = email;
+  return this.save();
+};
 module.exports = mongoose.model("user", userSchema);

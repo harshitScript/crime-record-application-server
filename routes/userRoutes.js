@@ -15,6 +15,7 @@ const deleteUserController = require("../controllers/user/deleteUserController")
 const userImageDeleteMiddleware = require("../middleware/userImageDeleteMiddleware");
 const userImageReplaceController = require("../controllers/user/userImageReplaceController");
 const resetPasswordRequestController = require("../controllers/user/resetPasswordRequestController");
+const updateUserController = require("../controllers/user/updateUserController");
 
 //* POST /user/login
 userRoutes.post("/login", json(), loginUserController);
@@ -28,6 +29,14 @@ userRoutes.post(
   deleteS3UploadMiddleware,
   validationsResultMiddleware,
   createUserController
+);
+
+// PUT /user/edit
+userRoutes.put(
+  "/edit",
+  authenticationCheckerMIddleware,
+  json(),
+  updateUserController
 );
 
 //* GET /user/:user-id

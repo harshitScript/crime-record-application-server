@@ -1,12 +1,10 @@
 const { expect } = require("chai");
-const axios = require("axios");
 const sinon = require("sinon");
 const mongoose = require("mongoose");
 const Configuration = require("../models/configuration");
 const configurationController = require("../controllers/general/configurationController");
 const whoIAmController = require("../controllers/general/whoIAmController");
 const addConfigurationController = require("../controllers/general/addConfigurationController");
-const findPinCodeDataController = require("../controllers/general/findPinCodeDataController");
 
 describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
   describe("whoIAmController", () => {
@@ -89,6 +87,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
       const res = {
         json() {},
       };
+
       configurationController(req, res, () => {}).then((res) => {
         expect(res).to.be.equals(1);
         done();
