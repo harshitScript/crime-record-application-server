@@ -24,6 +24,7 @@ userRoutes.post("/login", json(), loginUserController);
 //* POST /user/create
 userRoutes.post(
   "/create",
+  authenticationCheckerMIddleware,
   s3Uploads("user").single("image"),
   uploadCheckerMiddleware,
   createUserValidations,
