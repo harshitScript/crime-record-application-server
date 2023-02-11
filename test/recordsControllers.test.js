@@ -154,21 +154,47 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
     });
     describe("listRecordsIdController", () => {
       it("should throw an error if database refuses connection.", (done) => {
+        const req = {
+          query: {
+            creator: "all",
+          },
+        };
         sinon.stub(Record, "find");
         Record.find.throws();
-        listRecordsIdController({}, {}, () => {}).then((res) => {
+        listRecordsIdController(req, {}, () => {}).then((res) => {
           expect(res).to.be.equals(0);
           Record.find.restore();
           done();
         });
       });
       it("should return a list of records id if all goes fine.", (done) => {
+        const req = {
+          query: {
+            creator: testUser?._id,
+          },
+        };
         const res = {
           json(obj) {
             expect(obj).to.haveOwnProperty("recordsId");
           },
         };
-        listRecordsIdController({}, res, () => {}).then((res) => {
+        listRecordsIdController(req, res, () => {}).then((res) => {
+          expect(res).to.be.equals(1);
+          done();
+        });
+      });
+      it("should return a list of records id made by a particular creator.", (done) => {
+        const req = {
+          query: {
+            creator: "all",
+          },
+        };
+        const res = {
+          json(obj) {
+            expect(obj).to.haveOwnProperty("recordsId");
+          },
+        };
+        listRecordsIdController(req, res, () => {}).then((res) => {
           expect(res).to.be.equals(1);
           done();
         });
