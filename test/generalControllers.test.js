@@ -1,4 +1,5 @@
-const { expect } = require("chai");
+const chai = require("chai");
+const chaiHTTP = require("chai-http");
 const sinon = require("sinon");
 const mongoose = require("mongoose");
 const Configuration = require("../models/configuration");
@@ -6,17 +7,19 @@ const configurationController = require("../controllers/general/configurationCon
 const whoIAmController = require("../controllers/general/whoIAmController");
 const addConfigurationController = require("../controllers/general/addConfigurationController");
 
+//* PLugin chai-http enabled.
+chai.use(chaiHTTP);
+
 describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
   describe("whoIAmController", () => {
     it("should return the server config obj if executed.", () => {
       const res = {
         json(obj) {
-          expect(obj).to.have.property(
-            "name",
-            "Crime Record Application Server"
-          );
-          expect(obj).to.have.property("phase", "TEST");
-          expect(obj).to.have.property("author", "HARSHIT BHAWSAR");
+          chai
+            .expect(obj)
+            .to.have.property("name", "Crime Record Application Server");
+          chai.expect(obj).to.have.property("phase", "TEST");
+          chai.expect(obj).to.have.property("author", "HARSHIT BHAWSAR");
         },
       };
       whoIAmController({}, res);
@@ -59,7 +62,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
 
       configurationController(req, {}, () => {}).then((res) => {
         Configuration.findOne.restore();
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -74,7 +77,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
 
       configurationController(req, {}, () => {}).then((res) => {
         Configuration.findOne.restore();
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -89,7 +92,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
       };
 
       configurationController(req, res, () => {}).then((res) => {
-        expect(res).to.be.equals(1);
+        chai.expect(res).to.be.equals(1);
         done();
       });
     });
@@ -113,7 +116,7 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       addConfigurationController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -134,12 +137,12 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
       const res = {
         json() {},
         status(arg) {
-          expect(arg).to.be.equals(201);
+          chai.expect(arg).to.be.equals(201);
           return this;
         },
       };
       addConfigurationController(req, res, () => {}).then((res) => {
-        expect(res).to.be.equals(1);
+        chai.expect(res).to.be.equals(1);
         done();
       });
     });
@@ -183,4 +186,22 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
       });
     });
   }); */
+});
+
+describe("GENERAL CONTROLLERS END-TO-END TESTING SUITE.", () => {
+  describe("whoIAmController", () => {
+    it("It should return the expected response.", (done) => {
+      chai
+        .request("http://localhost:4000/general")
+        .get("/who-i-am")
+        .end((err, res) => {
+          chai.expect(err).to.be.null;
+          chai.expect(res?.body).to.haveOwnProperty("name");
+          chai.expect(res?.body).to.haveOwnProperty("phase");
+          chai.expect(res?.body).to.haveOwnProperty("author");
+          chai.expect(res?.status).to.be.equals(200);
+          done();
+        });
+    });
+  });
 });
