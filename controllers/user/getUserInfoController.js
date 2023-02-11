@@ -5,7 +5,7 @@ const getUserInfoController = async (req, res, next) => {
 
   try {
     const user = await User.findById(userId).select(
-      "name permissions email imageData.url createdAt updatedAt -_id"
+      "name mobile permissions email imageData.url createdAt updatedAt -_id"
     );
 
     if (!user) {
