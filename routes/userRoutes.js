@@ -16,6 +16,7 @@ const userImageDeleteMiddleware = require("../middleware/userImageDeleteMiddlewa
 const userImageReplaceController = require("../controllers/user/userImageReplaceController");
 const resetPasswordRequestController = require("../controllers/user/resetPasswordRequestController");
 const updateUserController = require("../controllers/user/updateUserController");
+const editUserValidations = require("../validations/editUserValidations");
 
 //* POST /user/login
 userRoutes.post("/login", json(), loginUserController);
@@ -36,6 +37,8 @@ userRoutes.put(
   "/edit",
   authenticationCheckerMIddleware,
   json(),
+  editUserValidations,
+  validationsResultMiddleware,
   updateUserController
 );
 

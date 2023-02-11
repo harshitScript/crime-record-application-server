@@ -28,7 +28,7 @@ const createUserValidations = [
     .isLength({ min: 8, max: 25 })
     .withMessage("Password must be 8 to 25 characters long."),
   body("permissions")
-    .custom((value) => {
+    .custom(() => {
       /*  if (Array.isArray(JSON.parse(value))) {
         return true;
       } else {
