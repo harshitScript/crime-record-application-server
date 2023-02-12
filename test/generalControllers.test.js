@@ -188,11 +188,12 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
   }); */
 });
 
+//* All requests will retrieve their data from development database.
 describe("GENERAL CONTROLLERS END-TO-END TESTING SUITE.", () => {
   describe("whoIAmController", () => {
-    it("It should return the expected response.", (done) => {
+    it("should return the expected response.", (done) => {
       chai
-        .request("http://localhost:4000/general")
+        .request(process.env.LOCAL_BASE_URI)
         .get("/who-i-am")
         .end((err, res) => {
           chai.expect(err).to.be.null;
@@ -200,6 +201,22 @@ describe("GENERAL CONTROLLERS END-TO-END TESTING SUITE.", () => {
           chai.expect(res?.body).to.haveOwnProperty("phase");
           chai.expect(res?.body).to.haveOwnProperty("author");
           chai.expect(res?.status).to.be.equals(200);
+          done();
+        });
+    });
+  });
+  describe("configurationController", () => {
+    it("should return the expected response.", (done) => {
+      chai
+        .request(process.env.LOCAL_BASE_URI)
+        .get("/configuration/harshitScript")
+        .end((err, res) => {
+          chai.expect(err).to.be.null;
+          chai.expect(res?.status).to.be.equals(200);
+          chai.expect(res?.body?.data).to.haveOwnProperty("_id");
+          chai.expect(res?.body?.data).to.haveOwnProperty("tenant");
+          chai.expect(res?.body?.data).to.haveOwnProperty("theme");
+          chai.expect(res?.body?.data).to.haveOwnProperty("config");
           done();
         });
     });
