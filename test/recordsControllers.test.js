@@ -1,4 +1,5 @@
-const { expect } = require("chai");
+const chai = require("chai");
+const chaiHTTP = require("chai-http");
 const fs = require("fs");
 const sinon = require("sinon");
 const User = require("../models/user");
@@ -14,6 +15,8 @@ const listRecordsIdController = require("../controllers/record/listRecordsIdCont
 const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
 const recordPdfController = require("../controllers/record/recordPdfController");
 const { pdfUtils } = require("../utils/helper");
+
+chai.use(chaiHTTP);
 
 describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
   let testUser = {};
@@ -63,7 +66,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(User, "findById");
       User.findById.throws();
       createRecordController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         User.findById.restore();
         done();
       });
@@ -80,7 +83,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(User, "findById");
       User.findById.returns(null);
       createRecordController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         User.findById.restore();
         done();
       });
@@ -110,18 +113,18 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       const res = {
         status(code) {
-          expect(code).to.be.equals(201);
+          chai.expect(code).to.be.equals(201);
           return this;
         },
         json(resObj) {
-          expect(resObj).to.haveOwnProperty("message");
+          chai.expect(resObj).to.haveOwnProperty("message");
           return this;
         },
       };
       const next = () => {};
       createRecordController(req, res, next)
         .then((res) => {
-          expect(res).to.be.equals(1);
+          chai.expect(res).to.be.equals(1);
           return User.findById(testUser?._id);
         })
         .then((user) => {
@@ -135,7 +138,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         sinon.stub(Record, "find");
         Record.find.throws();
         listRecordsController({}, {}, () => {}).then((res) => {
-          expect(res).to.be.equals(0);
+          chai.expect(res).to.be.equals(0);
           Record.find.restore();
           done();
         });
@@ -143,11 +146,11 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       it("should return a list of records if all goes fine.", (done) => {
         const res = {
           json(obj) {
-            expect(obj).to.haveOwnProperty("records");
+            chai.expect(obj).to.haveOwnProperty("records");
           },
         };
         listRecordsController({}, res, () => {}).then((res) => {
-          expect(res).to.be.equals(1);
+          chai.expect(res).to.be.equals(1);
           done();
         });
       });
@@ -162,7 +165,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         sinon.stub(Record, "find");
         Record.find.throws();
         listRecordsIdController(req, {}, () => {}).then((res) => {
-          expect(res).to.be.equals(0);
+          chai.expect(res).to.be.equals(0);
           Record.find.restore();
           done();
         });
@@ -175,11 +178,11 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         };
         const res = {
           json(obj) {
-            expect(obj).to.haveOwnProperty("recordsId");
+            chai.expect(obj).to.haveOwnProperty("recordsId");
           },
         };
         listRecordsIdController(req, res, () => {}).then((res) => {
-          expect(res).to.be.equals(1);
+          chai.expect(res).to.be.equals(1);
           done();
         });
       });
@@ -191,11 +194,11 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         };
         const res = {
           json(obj) {
-            expect(obj).to.haveOwnProperty("recordsId");
+            chai.expect(obj).to.haveOwnProperty("recordsId");
           },
         };
         listRecordsIdController(req, res, () => {}).then((res) => {
-          expect(res).to.be.equals(1);
+          chai.expect(res).to.be.equals(1);
           done();
         });
       });
@@ -240,7 +243,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       recordImageUploadController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -255,7 +258,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(Record, "findById");
       Record.findById.throws();
       recordImageUploadController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         Record.findById.restore();
         done();
       });
@@ -269,7 +272,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         file: {},
       };
       recordImageUploadController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -286,18 +289,18 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       const res = {
         status(code) {
-          expect(code).to.be.equals(201);
+          chai.expect(code).to.be.equals(201);
           return this;
         },
         json(obj) {
-          expect(obj).to.haveOwnProperty("message");
-          expect(obj).to.haveOwnProperty("url");
-          expect(obj).to.haveOwnProperty("type");
+          chai.expect(obj).to.haveOwnProperty("message");
+          chai.expect(obj).to.haveOwnProperty("url");
+          chai.expect(obj).to.haveOwnProperty("type");
         },
       };
       const next = () => {};
       recordImageUploadController(req, res, next).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -348,7 +351,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       recordImageDeleteController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -362,7 +365,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(Record, "findById");
       Record.findById.throws();
       recordImageDeleteController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         Record.findById.restore();
         done();
       });
@@ -375,7 +378,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       recordImageDeleteController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -388,8 +391,8 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       const res = {
         json(obj) {
-          expect(obj).to.haveOwnProperty("message");
-          expect(obj).to.haveOwnProperty("type");
+          chai.expect(obj).to.haveOwnProperty("message");
+          chai.expect(obj).to.haveOwnProperty("type");
         },
       };
       const next = (error) => {
@@ -403,7 +406,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       });
       recordImageDeleteController(req, res, next).then((res) => {
-        expect(res).to.be.equals(1);
+        chai.expect(res).to.be.equals(1);
         s3.deleteObject.restore();
         done();
       });
@@ -416,7 +419,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       recordImageDeleteController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -474,7 +477,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(Record, "findById");
       Record.findById.throws();
       getRecordInfoController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         Record.findById.restore();
         done();
       });
@@ -487,11 +490,11 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       const res = {
         json(obj) {
-          expect(obj).to.haveOwnProperty("record");
+          chai.expect(obj).to.haveOwnProperty("record");
         },
       };
       getRecordInfoController(req, res, () => {}).then((res) => {
-        expect(res).to.be.equals(1);
+        chai.expect(res).to.be.equals(1);
         done();
       });
     });
@@ -543,7 +546,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(Record, "findById");
       Record.findById.throws();
       deleteRecordController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         Record.findById.restore();
         done();
       });
@@ -556,7 +559,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       deleteRecordController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -568,7 +571,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         },
       };
       deleteRecordController(req, {}, () => {}).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         done();
       });
     });
@@ -581,11 +584,11 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       };
       const res = {
         json(obj) {
-          expect(obj).to.haveOwnProperty("message");
+          chai.expect(obj).to.haveOwnProperty("message");
         },
       };
       deleteRecordController(req, res, () => {}).then((res) => {
-        expect(res).to.be.equals(1);
+        chai.expect(res).to.be.equals(1);
         done();
       });
     });
@@ -637,7 +640,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(Record, "findById");
       Record.findById.throws();
       recordPdfController(req, {}, next).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         Record.findById.restore();
         done();
       });
@@ -652,7 +655,7 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(pdfUtils, "generate");
       pdfUtils.generate.returns(false);
       recordPdfController(req, {}, next).then((res) => {
-        expect(res).to.be.equals(0);
+        chai.expect(res).to.be.equals(0);
         pdfUtils.generate.restore();
         done();
       });
@@ -666,13 +669,15 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       const res = {
         end: () => {},
         setHeader: (key, value) => {
-          expect(
-            key === "Content-Type" || key === "Content-Disposition"
-          ).to.be.equals(true);
-          expect(
-            value === "application/pdf" ||
-              value === `inline:filename=record_${testRecord?._id}.pdf`
-          ).to.be.equals(true);
+          chai
+            .expect(key === "Content-Type" || key === "Content-Disposition")
+            .to.be.equals(true);
+          chai
+            .expect(
+              value === "application/pdf" ||
+                value === `inline:filename=record_${testRecord?._id}.pdf`
+            )
+            .to.be.equals(true);
         },
       };
       const next = () => {};
@@ -683,20 +688,88 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
       sinon.stub(fs, "createReadStream");
       fs.createReadStream.returns({
         pipe: (res) => {
-          expect(res).to.haveOwnProperty("end");
-          expect(res).to.haveOwnProperty("setHeader");
+          chai.expect(res).to.haveOwnProperty("end");
+          chai.expect(res).to.haveOwnProperty("setHeader");
         },
         on: (event) => {
-          expect(event).to.be.equals("end");
+          chai.expect(event).to.be.equals("end");
         },
       });
       recordPdfController(req, res, next).then((res) => {
-        expect(res).to.be.equals(1);
+        chai.expect(res).to.be.equals(1);
         pdfUtils.generate.restore();
         pdfUtils.delete.restore();
         fs.createReadStream.restore();
         done();
       });
+    });
+  });
+});
+
+describe("RECORD CONTROLLERS END-TO-END TEST SUITE", () => {
+  let testRecordId = "";
+  describe("GET /record/list-ids/:page", () => {
+    it("should return expected response.", (done) => {
+      chai
+        .request(process.env.LOCAL_BASE_URI)
+        .get("/record/list-ids/1?creator=all")
+        .end((err, res) => {
+          chai.expect(err).to.be.null;
+          chai.expect(res?.status).to.be.equals(200);
+          chai.expect(res?.body).to.haveOwnProperty("recordsId");
+          testRecordId = res?.body?.recordsId?.[0]?._id;
+          done();
+        });
+    });
+    describe("GET /record/:recordId", () => {
+      it("should return expected response.", (done) => {
+        chai
+          .request(process.env.LOCAL_BASE_URI)
+          .get(`/record/${testRecordId}`)
+          .end((err, res) => {
+            chai.expect(err).to.be.null;
+            chai.expect(res?.status).to.be.equals(200);
+            chai.expect(res?.body?.record).to.haveOwnProperty("_id");
+            chai.expect(res?.body?.record).to.haveOwnProperty("name");
+            chai.expect(res?.body?.record).to.haveOwnProperty("mobile");
+            chai.expect(res?.body?.record).to.haveOwnProperty("address");
+            chai.expect(res?.body?.record).to.haveOwnProperty("city");
+            chai.expect(res?.body?.record).to.haveOwnProperty("state");
+            chai.expect(res?.body?.record).to.haveOwnProperty("crimes");
+            chai.expect(res?.body?.record).to.haveOwnProperty("creator");
+            chai.expect(res?.body?.record).to.haveOwnProperty("imageData");
+            done();
+          });
+      });
+    });
+  });
+  describe("GET /record/:recordId/pdf", () => {
+    it("should return the expected response.", (done) => {
+      chai
+        .request(process.env.LOCAL_BASE_URI)
+        .get(`/record/${testRecordId}/pdf`)
+        .end((err, res) => {
+          chai.expect(err).to.be.null;
+          chai.expect(res?.status).to.be.equals(200);
+          chai
+            .expect(res?.headers)
+            .to.haveOwnProperty("content-type", "application/pdf");
+          chai.expect(res?.headers).to.haveOwnProperty("content-disposition");
+          done();
+        });
+    });
+  });
+  describe("GET /record/list/:page", () => {
+    it("should return the expected response.", (done) => {
+      chai
+        .request(process.env.LOCAL_BASE_URI)
+        .get("/record/list/1")
+        .end((err, res) => {
+          chai.expect(err).to.be.null;
+          chai.expect(res?.status).to.be.equals(200);
+          chai.expect(res?.body).to.haveOwnProperty("records");
+          done();
+        });
     });
   });
 });

@@ -190,11 +190,11 @@ describe("GENERAL CONTROLLERS TESTING SUITE >>>", () => {
 
 //* All requests will retrieve their data from development database.
 describe("GENERAL CONTROLLERS END-TO-END TESTING SUITE.", () => {
-  describe("whoIAmController", () => {
+  describe("GET /general/who-i-am", () => {
     it("should return the expected response.", (done) => {
       chai
         .request(process.env.LOCAL_BASE_URI)
-        .get("/who-i-am")
+        .get("/general/who-i-am")
         .end((err, res) => {
           chai.expect(err).to.be.null;
           chai.expect(res?.body).to.haveOwnProperty("name");
@@ -205,11 +205,11 @@ describe("GENERAL CONTROLLERS END-TO-END TESTING SUITE.", () => {
         });
     });
   });
-  describe("configurationController", () => {
+  describe("GET /general/configuration/:tenant", () => {
     it("should return the expected response.", (done) => {
       chai
         .request(process.env.LOCAL_BASE_URI)
-        .get("/configuration/harshitScript")
+        .get("/general/configuration/harshitScript")
         .end((err, res) => {
           chai.expect(err).to.be.null;
           chai.expect(res?.status).to.be.equals(200);

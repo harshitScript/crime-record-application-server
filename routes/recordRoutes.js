@@ -27,11 +27,7 @@ recordRoutes.post(
 );
 
 //* GET /record/list/:page
-recordRoutes.get(
-  "/list/:page",
-  authenticationCheckerMIddleware,
-  listRecordsController
-);
+recordRoutes.get("/list/:page", listRecordsController);
 
 //* GET /record/list-ids/:page
 recordRoutes.get("/list-ids/:page", listRecordsIdController);
