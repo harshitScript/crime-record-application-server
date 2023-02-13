@@ -446,7 +446,6 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         name: "test user 2",
         state: "test state",
         mobile: 9407541209,
-        creator: "xyz",
         imageData: {
           urls: {
             front: "",
