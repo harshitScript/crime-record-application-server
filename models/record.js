@@ -77,4 +77,21 @@ recordSchema.methods.deleteImage = function ({ type = "" }) {
   return this.save();
 };
 
+recordSchema.methods.editRecord = function ({
+  name,
+  mobile,
+  address,
+  crimes,
+  city,
+  state,
+}) {
+  this.name = name;
+  this.address = address;
+  this.mobile = mobile;
+  this.crimes = crimes;
+  this.city = city;
+  this.state = state;
+  return this.save();
+};
+
 module.exports = mongoose.model("record", recordSchema);

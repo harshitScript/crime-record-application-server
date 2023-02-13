@@ -22,7 +22,8 @@
     "react-hooks/exhaustive-deps": 0,
     "no-unknown-property": 0,
     "camelcase": 2,
-    "indent-legacy": 0
+    "indent-legacy": 0,
+    "no-undef": 0
   },
   "parserOptions": {
     "ecmaVersion": 2021,

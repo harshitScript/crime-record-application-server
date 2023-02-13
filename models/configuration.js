@@ -17,10 +17,6 @@ const configurationSchema = new Schema({
         type: String,
         required: true,
       },
-      secondaryColor: {
-        type: String,
-        required: true,
-      },
       ternaryColor: {
         type: String,
         required: true,

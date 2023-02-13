@@ -15,6 +15,7 @@ const listRecordsIdController = require("../controllers/record/listRecordsIdCont
 const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
 const deleteRecordViaRootController = require("../controllers/record/deleteRecord/deleteRecordViaRootController");
 const recordPdfController = require("../controllers/record/recordPdfController");
+const editRecordController = require("../controllers/record/editRecordController");
 
 //* POST /record/create
 recordRoutes.post(
@@ -24,6 +25,14 @@ recordRoutes.post(
   createRecordValidations,
   validationsResultMiddleware,
   createRecordController
+);
+
+//* PUT /record/:recordId/edit
+recordRoutes.put(
+  "/:recordId/edit",
+  authenticationCheckerMIddleware,
+  json(),
+  editRecordController
 );
 
 //* GET /record/list/:page

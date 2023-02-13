@@ -15,6 +15,7 @@ const listRecordsIdController = require("../controllers/record/listRecordsIdCont
 const deleteRecordController = require("../controllers/record/deleteRecord/deleteRecordController");
 const recordPdfController = require("../controllers/record/recordPdfController");
 const { pdfUtils } = require("../utils/helper");
+const editRecordController = require("../controllers/record/editRecordController");
 
 chai.use(chaiHTTP);
 
@@ -700,6 +701,122 @@ describe("RECORD CONTROLLERS TESTING SUITE >>>", () => {
         pdfUtils.generate.restore();
         pdfUtils.delete.restore();
         fs.createReadStream.restore();
+        done();
+      });
+    });
+  });
+  describe("editRecordController", () => {
+    let testRecord = {};
+    before((done) => {
+      const record = new Record({
+        address: "test address",
+        city: "test city",
+        crimes: [
+          {
+            place: {
+              city: "xyz",
+              state: "xyz",
+              address: "xyz",
+            },
+            timeStamp: 12345678,
+            description: "test description",
+            category: "A",
+          },
+        ],
+        name: "test user",
+        state: "test state",
+        mobile: 9407541209,
+        imageData: {},
+        creator: testUser?._id,
+      });
+
+      record.save().then((record) => {
+        testRecord = record;
+        done();
+      });
+    });
+
+    /* it("should throw an error if database refuses to connect.", (done) => {
+      const req = {
+        params: {
+          recordId: test,
+        },
+        body: {
+          name: "",
+          mobile: "",
+          address: "",
+          city: "",
+          state: "",
+        },
+      };
+      const res = {};
+      const next = () => {};
+      sinon.stub(Record, "findById");
+      Record.findById.throws();
+      editRecordController(req, res, next).then((res) => {
+        chai.expect(res).to.be.equals(0);
+        Record.findById.restore();
+        done();
+      });
+    }); */
+    it("should throw an error if record not found", (done) => {
+      const req = {
+        params: {
+          recordId: "xyz",
+        },
+        body: {
+          name: "",
+          mobile: "",
+          address: "",
+          city: "",
+          state: "",
+        },
+      };
+      const res = {};
+      const next = () => {};
+      sinon.stub(Record, "findById");
+      Record.findById.returns(null);
+      editRecordController(req, res, next).then((res) => {
+        chai.expect(res).to.be.equals(0);
+        Record.findById.restore();
+        done();
+      });
+    });
+    it("should edit the record successfully.", (done) => {
+      const req = {
+        params: {
+          recordId: testRecord?._id,
+        },
+        body: {
+          name: "test one",
+          mobile: "7777777778",
+          address: "test address",
+          city: "test city",
+          state: "test state",
+          crimes: [
+            {
+              place: {
+                city: "xyz",
+                state: "xyz",
+                address: "xyz",
+              },
+              timeStamp: 12345678,
+              description: "test description",
+              category: "A",
+            },
+          ],
+        },
+      };
+      const res = {
+        json(obj) {
+          chai.expect(obj).to.haveOwnProperty("message");
+        },
+      };
+      const next = (error) => {
+        console.log("the error => ", error.message);
+      };
+      editRecordController(req, res, next).then((res) => {
+        chai.expect(res).to.be.equals(1);
         done();
       });
     });
