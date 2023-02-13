@@ -99,7 +99,7 @@ const recordPDFTemplate = `
 
 const prepareRecordPdfHTML = (record = {}) => {
   const resultHTML = recordPDFTemplate
-    .replace("%recordName%", record?.name)
+    .replace("%recordName%", record?.name?.ah)
     .replace("%uid%", record?._id)
     .replace("%mobile%", record?.mobile)
     .replace("%cityAndState%", `${record?.city}, ${record?.state}`)
